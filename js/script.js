@@ -19,7 +19,10 @@ const titleClickHandler = function (event) {
 const optArticleSelector = '.post',
   optTitleSelector = '.post-title',
   optTitleListSelector = '.titles',
-  optArticleTagsSelector = '.post-tags .list';
+  optArticleTagsSelector = '.post-tags .list',
+  optTagsListSelector = '.tags.list',
+  optCloudClassCount = 5,
+  optCloudClassPrefix = 'tag-size-';
 
 function generateTitleLinks(customSelector = '') {
   const titleList = document.querySelector(optTitleListSelector); /* remove contents of titleList */
@@ -42,6 +45,7 @@ function generateTitleLinks(customSelector = '') {
 generateTitleLinks();
 
 function generateTags() {
+  let allTags = {};
   const articles = document.querySelectorAll(optArticleSelector); /* find all articles */
   for (let article of articles) {/* START LOOP: for every article: */
     const tagsWrapper = article.querySelector(optArticleTagsSelector); /* find tags wrapper */
@@ -51,12 +55,51 @@ function generateTags() {
     for (let tag of articleTagsArray) {/* START LOOP: for each tag */
       const linkHTML = '<li><a href="#tag-' + tag + '">' + tag +  '</a></li> ';/* generate HTML of the link */
       html += linkHTML; /* add generated code to html variable */
+      if(!allTags[tag]){
+        allTags[tag] = 1;
+      } else {
+        allTags[tag]++;
+      }
     } /* END LOOP: for each tag */
     tagsWrapper.innerHTML = html; /* insert HTML of all the links into the tags wrapper */
   }/* END LOOP: for every article: */
+  const taglist = document.querySelector('.tags');
+  //taglist.innerHTML = allTags.join(' ');
+  const tagsParams = calculateTagsParams(allTags);
+  let allTagsHTML = '';
+  for(let tag in allTags) {
+    allTagsHTML += '<li><a class="' + optCloudClassPrefix + calculateTagClass(allTags[tag], tagsParams) + '" href="#tag-' + tag + '">' + tag + '</a></li>' + ' ';
+  }
+  taglist.innerHTML = allTagsHTML;
 }
 
 generateTags();
+
+function calculateTagsParams(tags) {
+  const params = {
+    max: 0,
+    min: 9999999
+  };
+
+  for(let tag in tags) {
+    //console.log(tag + ' is used ' + tags[tag]+ ' times');
+    if(tags[tag] > params.max) {
+      params.max = tags[tag];
+    } else {
+      params.min = tags[tag];
+    }
+  }
+  console.log(params);
+  return params;
+}
+
+function calculateTagClass(count, params) {
+  const normalizedCount = count - params.min;
+  const normalizedMax = params.max - params.min;
+  const percentage = normalizedCount / normalizedMax;
+  const classNumber = Math.floor(percentage * (optCloudClassCount - 1) + 1);
+  return classNumber;
+}
 
 function tagClickHandler(event){
   event.preventDefault(); /* prevent default action for this event */
