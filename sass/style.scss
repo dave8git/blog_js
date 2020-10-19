@@ -118,3 +118,46 @@ body {
     margin: 0 10px 0 0;
   }
 }
+
+.tag-size-5 {
+  display: inline-block;
+  font-size: 30px;
+  color: orange;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.tag-size-4 {
+  display: inline-block;
+  font-size: 27px;
+  color: rgb(255, 166, 0);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.tag-size-3 {
+  font-size: 24px;
+  color: burlywood;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.tag-size-2 {
+  font-size: 20px;
+  color: green;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.tag-size-1 {
+  font-size: 15px;
+  color: mediumslateblue;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.tags li {
+  display: inline-block;
+}
+
+

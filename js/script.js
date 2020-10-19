@@ -22,7 +22,8 @@ const optArticleSelector = '.post',
   optArticleTagsSelector = '.post-tags .list',
   optTagsListSelector = '.tags.list',
   optCloudClassCount = 5,
-  optCloudClassPrefix = 'tag-size-';
+  optCloudClassPrefix = 'tag-size-',
+  optAuthorsListSelector = '.authors.list';
 
 function generateTitleLinks(customSelector = '') {
   const titleList = document.querySelector(optTitleListSelector); /* remove contents of titleList */
@@ -82,14 +83,12 @@ function calculateTagsParams(tags) {
   };
 
   for(let tag in tags) {
-    //console.log(tag + ' is used ' + tags[tag]+ ' times');
     if(tags[tag] > params.max) {
       params.max = tags[tag];
     } else {
       params.min = tags[tag];
     }
   }
-  console.log(params);
   return params;
 }
 
@@ -130,16 +129,31 @@ function addClickListenersToTags(){
 addClickListenersToTags();
 
 function generateAuthors() {
+  let allAuthors = {};
   const articles = document.querySelectorAll(optArticleSelector);
   for (let article of articles) {
     const authorsWrapper = article.querySelector('.post .post-author');
-    console.log('authorsWrapper', authorsWrapper);
     let html = '';
     const author = article.getAttribute('data-author');
     html = '<a href="#author-' + author + '">by ' + author + '</a>';
     authorsWrapper.innerHTML = html;
+    //<li><a href="#"><span class="author-name">Kitty Toebean</span></a></li>
+    console.log(document.querySelector(optAuthorsListSelector));
+    if(!allAuthors[author]) {
+      allAuthors[author] = 1;
+    } else {
+      allAuthors[author]++;
+    }
   }
+  const authorsList = document.querySelector(optAuthorsListSelector);
+  let allAuthorsHTML = '';
+  for(let author in allAuthors) {
+    allAuthorsHTML += '<li><a href="#author-' + author + '">' + author + ' ' + (allAuthors[author]) + '</a></li>';
+    console.log('dupa');
+  }
+  authorsList.innerHTML = allAuthorsHTML;
 }
+
 generateAuthors();
 
 function authorClickHandler(event) {
@@ -154,13 +168,11 @@ function authorClickHandler(event) {
   for (let activeAuthor of activeAuthors) {
     activeAuthor.classList.add('active');
   }
-  console.log('activeAuthors', activeAuthors);
   generateTitleLinks('[data-author="' + author + '"]');
 }
 
 function addClickListenersToAuthors(){
   const links = document.querySelectorAll('a[href^="#author-"]');
-  console.log(links);
   for (let link of links) {
     link.addEventListener('click', authorClickHandler);
   }
