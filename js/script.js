@@ -3,8 +3,9 @@ const templates = {
   articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
   tagLink: Handlebars.compile(document.querySelector('#template-tag-link').innerHTML),
   authorsLink: Handlebars.compile(document.querySelector('#template-author-link').innerHTML),
-  tagCloudLink: Handlebars.compile(document.querySelector('#template-tag-cloud-link').innerHTML)
-}
+  tagCloudLink: Handlebars.compile(document.querySelector('#template-tag-cloud-link').innerHTML),
+  authorCloudLink: Handlebars.compile(document.querySelector('#template-authors-cloud-link').innerHTML),
+};
 
 console.log(document.querySelector('#template-tag-link').innerHTML);
 const titleClickHandler = function (event) {
@@ -80,13 +81,13 @@ function generateTags() {
   const taglist = document.querySelector('.tags');
   //taglist.innerHTML = allTags.join(' ');
   const tagsParams = calculateTagsParams(allTags);
-  const allTagsData = {tags: []};
+  let allTagsData = {tags: []};
   for(let tag in allTags) {
     //allTagsHTML += '<li><a class="' + optCloudClassPrefix + calculateTagClass(allTags[tag], tagsParams) + '" href="#tag-' + tag + '">' + tag + '</a></li>' + ' ';
     allTagsData.tags.push({
       tag: tag,
       count: allTags[tag],
-      className: calculateTagClass(allTags[tag], tagsParams)
+      className: optCloudClassPrefix + calculateTagClass(allTags[tag], tagsParams)
     });
   }
   taglist.innerHTML = templates.tagCloudLink(allTagsData);
@@ -151,10 +152,10 @@ function generateAuthors() {
   const articles = document.querySelectorAll(optArticleSelector);
   for (let article of articles) {
     const authorsWrapper = article.querySelector('.post .post-author');
-    let html = '';
+    //let html = '';
     const author = article.getAttribute('data-author');
     //html = '<a href="#author-' + author + '">by ' + author + '</a>';
-    const linkHTMLData = {author: author, author: author};
+    const linkHTMLData = {author: author};
     const linkHTML = templates.authorsLink(linkHTMLData);
     authorsWrapper.innerHTML = linkHTML;
     //<li><a href="#"><span class="author-name">Kitty Toebean</span></a></li>
@@ -166,12 +167,16 @@ function generateAuthors() {
     }
   }
   const authorsList = document.querySelector(optAuthorsListSelector);
-  let allAuthorsHTML = '';
+  let allAuthorsData = {authors: []};
   for(let author in allAuthors) {
-    allAuthorsHTML += '<li><a href="#author-' + author + '">' + author + ' ' + (allAuthors[author]) + '</a></li>';
-    console.log('dupa');
+    //allAuthorsHTML += '<li><a href="#author-' + author + '">' + author + ' ' + (allAuthors[author]) + '</a></li>';
+    allAuthorsData.authors.push({
+      author: author,
+      count: allAuthors[author],
+    });
   }
-  authorsList.innerHTML = allAuthorsHTML;
+  //authorsList.innerHTML = allAuthorsHTML;
+  authorsList.innerHTML = templates.authorCloudLink(allAuthorsData);
 }
 
 generateAuthors();
